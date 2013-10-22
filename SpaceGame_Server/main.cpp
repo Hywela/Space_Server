@@ -28,11 +28,14 @@ int main(int argc, char **argv)
 	int quit;	
 	MySqlHandler *db;
 	/* Initialize SDL_net */
-	db = new MySqlHandler();
 
-	db->set_database_info("127.0.0.1","root",3306,"");
+	db = new MySqlHandler();
+	db->set_database_info("","",3306,"");
 	db->init_connection();
+			//db->handler_set_news("Welcome to the Game");
+
 	
+
 
 	if (SDL_Init(0) < 0)
 	{
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
 				quit = 1;
 			}
 		else if (!strcmp((char *)p->data, "out_db")){
-			db->handler_test();
+			//db->handler_test();
 		
 		}else if (!strcmp((char *)p->data, "getUserName")){
 

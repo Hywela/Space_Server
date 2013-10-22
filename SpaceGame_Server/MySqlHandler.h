@@ -15,6 +15,7 @@
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
 #pragma comment(lib,"mysqlcppconn.lib")
 #pragma comment(lib,"libmysql.lib")
 using namespace std;
@@ -25,6 +26,7 @@ private:
 		sql::Connection *con;
 		sql::Statement *stmt;
 		sql::ResultSet *res;
+		sql::PreparedStatement  *prep_stmt;
 		string HOST;
 		string DB;
 		string PWD;
@@ -38,5 +40,6 @@ public:
 	void set_database_info(string host, string db, int port, string pwd);
 	void init_connection();
 	void handler_test(void);
+	void handler_set_news(string input);
 };
 

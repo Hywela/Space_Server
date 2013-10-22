@@ -29,6 +29,8 @@ void MySqlHandler::init_connection()
 	try {
 	driver = get_driver_instance();
 	con = driver->connect("tcp://"+HOST, DB, PWD);
+	con->setSchema("s090376");
+	cout << "\n MySql Connection Established ";
 	} catch (sql::SQLException &e) {
   cout << "# ERR: SQLException in " << __FILE__;
   cout << "(" << __FUNCTION__ << ") on line "<< __LINE__ << endl;
@@ -36,21 +38,40 @@ void MySqlHandler::init_connection()
   cout << " (MySQL error code: " << e.getErrorCode();
   cout << ", SQLState: " << e.getSQLState() << " )" << endl;
 }
+
+
+
+
+
 }
 
 
 void MySqlHandler::handler_test(void)
 {
-	  con->setSchema("test");
+	  
 
   stmt = con->createStatement();
-  res = stmt->executeQuery("SELECT id FROM test");
+  res = stmt->executeQuery("SELECT name FROM User");
   while (res->next()) {
-    cout << "\t... MySQL replies: ";
+    cout << "\n ... MySQL replies: ";
     /* Access column data by alias or column name */
-    cout << res->getInt("id") << endl;
-    cout << "\t... MySQL says it again: ";
-    /* Access column fata by numeric offset, 1 is the first column */
-    cout << res->getString(1) << endl;
+    cout << res->getString("name") << endl;
+
 }
+}
+
+
+void MySqlHandler::handler_set_news(string input)
+{
+
+
+prep_stmt = con->prepareStatement("INSERT INTO In_Game_News(news_text) VALUES (?)");
+
+		prep_stmt->setString(1,input);
+		prep_stmt->execute();
+
+
+  
+  delete prep_stmt;
+
 }
