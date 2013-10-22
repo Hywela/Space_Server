@@ -19,13 +19,21 @@ Updated by Simon McCallum October 2013
 #pragma comment(lib,"SDL2main.lib")
 #pragma comment(lib,"SDL2_net.lib")
 
+#include "MySqlHandler.h"
+
 int main(int argc, char **argv)
 {
 	UDPsocket sd;       /* Socket descriptor */
 	UDPpacket *p;       /* Pointer to packet memory */
 	int quit;	
- 
+	MySqlHandler *db;
 	/* Initialize SDL_net */
+	db = new MySqlHandler();
+
+	db->set_database_info("127.0.0.1","root",3306,"");
+	db->init_connection();
+	
+
 	if (SDL_Init(0) < 0)
 	{
 		fprintf(stderr, "SDL_Init: \n");
@@ -76,14 +84,24 @@ int main(int argc, char **argv)
 			/* Quit if packet contains "quit" */
 			if (strcmp((char *)p->data, "quit") == 0)
 				quit = 1;
-		}
-		else
+			}
+		else if (!strcmp((char *)p->data, "out_db")){
+			db->handler_test();
+		
+		}else if (!strcmp((char *)p->data, "getUserName")){
+
+
+		}else if (!strcmp((char *)p->data, "getUserName")){
+
+
+		}else
 		{
 			SDL_Delay(20);
 		}
 	}
  
 	/* Clean and exit */
+	delete db;
 	SDLNet_FreePacket(p);
 	SDLNet_Quit();
 	return EXIT_SUCCESS;
