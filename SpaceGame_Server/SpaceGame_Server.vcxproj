@@ -69,9 +69,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MySqlHandler.cpp" />
+    <ClCompile Include="NetworkSender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MySqlHandler.h" />
+    <ClInclude Include="NetworkSender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

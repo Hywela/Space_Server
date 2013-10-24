@@ -21,9 +21,15 @@
     <ClCompile Include="MySqlHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkSender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MySqlHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkSender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,7 +29,7 @@ void MySqlHandler::init_connection()
 	try {
 	driver = get_driver_instance();
 	con = driver->connect("tcp://"+HOST, DB, PWD);
-	con->setSchema("s090376");
+	con->setSchema("");
 	cout << "\n MySql Connection Established ";
 	} catch (sql::SQLException &e) {
   cout << "# ERR: SQLException in " << __FILE__;
