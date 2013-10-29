@@ -41,5 +41,14 @@ public:
 	void init_connection();
 	void handler_test(void);
 	void handler_set_news(string input);
+
+	
+
+	//online
+	void handler_set_online(int input);
+	void handler_update_online_status(int input);
+	void handler_return_users_online();
+	void handler_in_game();
+	int handler_getID(string input);
 };
 

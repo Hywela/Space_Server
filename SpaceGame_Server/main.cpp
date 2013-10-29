@@ -26,13 +26,16 @@ int main(int argc, char **argv)
 	UDPsocket sd, udpsock;       /* Socket descriptor */
 	UDPpacket *p;       /* Pointer to packet memory */
 	int quit;	
-	MySqlHandler *db;
 
+	char switch_char = 'm';
+	char dbHandler;
+	MySqlHandler *db;
+	string data_from_packet;
 	/* Initialize SDL_net */
 
 
 	db = new MySqlHandler();
-	db->set_database_info("","",3306,"");
+	db->set_database_info();
 	db->init_connection();
 			//db->handler_set_news("Welcome to the Game");
 
@@ -84,53 +87,89 @@ int main(int argc, char **argv)
 		/* Wait a packet. UDP_Recv returns != 0 if a packet is coming */
 		if (SDLNet_UDP_Recv(sd, p))
 		{
+			switch_char='m';
+			 data_from_packet= (char *)p->data;
+			 if (data_from_packet[0] == '-')
+			  switch_char = data_from_packet[1];
+			
+
+
 			printf("UDP Packet incoming\n");
 			printf("\tChan:    %d\n", p->channel);
 			printf("\tData:    %s\n", (char *)p->data);
-			printf("\tx,y:    %X\n", ((Uint32 *)p->data)[0]);
-			printf("\tx,y:    %X\n", ((Uint32 *)p->data)[1]);
-			printf("\tx:    %d\n", ((Uint32 *)p->data)[2]);
-			printf("\ty:    %d\n", ((Uint32 *)p->data)[3]);
+		//printf("\tINFO:    %s\n", (char)p->data[2]);
 			printf("\tLen:     %d\n", p->len);
 			printf("\tMaxlen:  %d\n", p->maxlen);
 			printf("\tStatus:  %d\n", p->status);
 			printf("\tAddress: %x %x\n", p->address.host, p->address.port);
  
-			/* Quit if packet contains "quit" */
-			if (strcmp((char *)p->data, "quit") == 0)
-				quit = 1;
-			}
-		else if (!strcmp((char *)p->data, "help")){
-			//db->handler_test();
-			
-			
+		
+
+			switch (switch_char)
+			{
+			case 'a':{
+					 
+					 //db->handler_test();
 			IPaddress adr;
 			adr = p->address;
-
-		send = new NetworkSender(p->address.host, p->address.port,23,15);
-	
-		send->handler_init(argc, argv);	send->handlet_setHost(adr,udpsock);
-		send->handler_send("1234567891011");
-	
-		
-			
+			send = new NetworkSender(p->address.host, p->address.port,23);
+			send->handler_init(argc, argv);	send->handlet_setHost(adr,udpsock);
+			send->handler_send("1234567891011");
 			strcpy_s((char *)p->data, 8, "default");
-			
-
 			delete send;
-
-		}else if (!strcmp((char *)p->data, "test")){
-
-			cout << p->address.port;
-
-		strcpy_s((char *)p->data, 8, "default");
-		}else if (!strcmp((char *)p->data, "getUserName")){
-
-
-		}else
-		{
-			SDL_Delay(20);
-		}
+					 
+					  cout << "\n a \n";
+					 }
+			break;
+			case 'b':{
+					 
+					 cout << "\n  b \n";
+					 
+					 
+					 }
+			break;
+			case 'c':{
+					 
+					 
+					  cout << "\n c \n";
+					 }
+			break;
+			case 'd':{
+					 
+					 //db->handler_set_online(1);
+			db->handler_update_online_status(1);
+			cout << " Is online now";
+					 
+					 
+					 }
+			break;
+			case 'e':{ cout << "\n  e \n";}
+			break;
+			case 'u':{ 
+				SDL_Delay(200);
+					if (SDLNet_UDP_Recv(sd, p)){
+						
+						int id =	db->handler_getID((char *)p->data);
+						IPaddress adr;
+						adr = p->address;
+					
+						send = new NetworkSender(p->address.host, p->address.port, id);
+						send->handler_init(argc, argv);	send->handlet_setHost(adr,udpsock);
+						send->handler_send("*u");
+						
+						delete send, adr;
+				}}
+				
+			break;
+			default: SDL_Delay(20);
+				break;
+			}
+			 
+		if (strcmp((char *)p->data, "quit") == 0)
+				quit = 1;
+		
+	
+	}
 	}
  
 	/* Clean and exit */

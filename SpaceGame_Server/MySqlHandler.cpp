@@ -29,7 +29,7 @@ void MySqlHandler::init_connection()
 	try {
 	driver = get_driver_instance();
 	con = driver->connect("tcp://"+HOST, DB, PWD);
-	con->setSchema("");
+	con->setSchema("s090376");
 	cout << "\n MySql Connection Established ";
 	} catch (sql::SQLException &e) {
   cout << "# ERR: SQLException in " << __FILE__;
@@ -74,4 +74,45 @@ prep_stmt = con->prepareStatement("INSERT INTO In_Game_News(news_text) VALUES (?
   
   delete prep_stmt;
 
+}
+
+
+// Sets the user online and removes user whose not been online in 30 min
+void MySqlHandler::handler_set_online(int input)
+{
+	prep_stmt = con->prepareStatement("DELETE FROM Online_User WHERE time_start < (NOW() - INTERVAL 30 MINUTE)");
+	
+		prep_stmt->execute();
+  delete prep_stmt;
+
+prep_stmt = con->prepareStatement("INSERT INTO Online_User(userID) VALUES(?)");
+	
+		prep_stmt->setInt(1,input);
+		prep_stmt->execute();
+
+  delete prep_stmt;
+
+}
+
+void MySqlHandler :: handler_update_online_status(int input){
+prep_stmt = con->prepareStatement("UPDATE Online_User SET time_start=NOW() WHERE userID=? ");
+	
+		prep_stmt->setInt(1,input);
+		prep_stmt->execute();
+
+  delete prep_stmt;
+
+}
+
+int MySqlHandler:: handler_getID(string input){
+	  stmt = con->createStatement();
+	  
+res =  stmt->executeQuery("Select id FROM User WHERE name LIKE '"+input+"'");
+	
+res->next();
+	int id = res->getInt(1);
+	
+	
+  delete stmt, res;
+  return id;
 }

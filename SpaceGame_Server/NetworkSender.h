@@ -16,15 +16,15 @@ class NetworkSender
         IPaddress server_address; /* the server address */
         UDPpacket *packet; /* Pointer to packet memory */
         int quit;
-        int x;
-        int y;
+        int id;
+        int y; int x;
 		char * server_name;
 		Uint16 port_number;
 		Uint16 default_client_port;
 
 
 public:
-	NetworkSender(Uint16 server_name, Uint16 port, int x, int y);
+	NetworkSender(Uint16 server_name, Uint16 port, int id);
 	~NetworkSender(void);
 	NetworkSender();
 	void handler_init(int argc, char **argv);

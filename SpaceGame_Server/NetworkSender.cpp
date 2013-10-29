@@ -5,11 +5,11 @@ NetworkSender::NetworkSender(){
 	
 
 }
-NetworkSender::NetworkSender(Uint16 server_name, Uint16 port, int x, int y)
+NetworkSender::NetworkSender(Uint16 server_name, Uint16 port, int id)
 {
 
-		this->x=x;
-		this->y=y;
+		this->id=id;
+		
 		this->server_name = "127.000.000.001";  // This is the default server name, and creates enough memory to store other names from argv[1]
 		port_number = 8810;  // This is a default port that is overridden by argv[2]
 		//server_address = server_name;  // This is the default server name, and creates enough memory to store other names from argv[1]
@@ -56,15 +56,19 @@ void NetworkSender::handler_init(int argc, char **argv)
 void NetworkSender::handler_send(char *input)
 {
 		
-	
+
 	strcpy_s((char *)packet->data, strlen(input)+1, input);
 	
-
+				packet->data[8]=(Uint8)id;
+                packet->data[9]=(Uint8)0;
+                packet->data[10]=(Uint8)0;
+                packet->data[11]=(Uint8)0;
+           
  
 		packet->address.host = server_address.host;	/* Set the destination host */
 		packet->address.port = server_address.port;	/* And destination port */
- 
-		packet->len = 34;
+		
+		packet->len = 24;
 		SDLNet_UDP_Send(udpsock, -1, packet); /* This sets the p->channel */
  
 		
