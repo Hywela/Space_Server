@@ -49,6 +49,6 @@ public:
 	void handler_update_online_status(int input);
 	void handler_return_users_online();
 	void handler_in_game();
-	int handler_getID(string input);
+	int handler_getID(string input, string pwd);
 };
 

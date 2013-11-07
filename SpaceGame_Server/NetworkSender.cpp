@@ -11,7 +11,7 @@ NetworkSender::NetworkSender(Uint16 server_name, Uint16 port, int id)
 		this->id=id;
 		
 		this->server_name = "127.000.000.001";  // This is the default server name, and creates enough memory to store other names from argv[1]
-		port_number = 8810;  // This is a default port that is overridden by argv[2]
+		port_number = 8880;  // This is a default port that is overridden by argv[2]
 		//server_address = server_name;  // This is the default server name, and creates enough memory to store other names from argv[1]
 		//port_number = port;  // This is a default port that is overridden by argv[2]
 		default_client_port = 8881; // set to 0 for a random port

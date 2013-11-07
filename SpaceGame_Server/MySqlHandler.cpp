@@ -29,7 +29,7 @@ void MySqlHandler::init_connection()
 	try {
 	driver = get_driver_instance();
 	con = driver->connect("tcp://"+HOST, DB, PWD);
-	con->setSchema("s090376");
+	con->setSchema("imt3601h13gr01");
 	cout << "\n MySql Connection Established ";
 	} catch (sql::SQLException &e) {
   cout << "# ERR: SQLException in " << __FILE__;
@@ -104,15 +104,29 @@ prep_stmt = con->prepareStatement("UPDATE Online_User SET time_start=NOW() WHERE
 
 }
 
-int MySqlHandler:: handler_getID(string input){
+int MySqlHandler:: handler_getID(string input, string pwd){
+
+	cout << "  " << input;
+	  int id=0;
 	  stmt = con->createStatement();
-	  
-res =  stmt->executeQuery("Select id FROM User WHERE name LIKE '"+input+"'");
+try {res =  stmt->executeQuery("Select id FROM User WHERE name LIKE '"+input+"' and pwd LIKE '"+pwd+"'");
+	if(	res->next()){
+		id = res->getInt(1);
+	}
+
+
+
+	} catch (sql::SQLException &e) {
+  cout << "# ERR: SQLException in " << __FILE__;
+  cout << "(" << __FUNCTION__ << ") on line "<< __LINE__ << endl;
+  cout << "# ERR: " << e.what();
+  cout << " (MySQL error code: " << e.getErrorCode();
+  cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+
+}
+
 	
-res->next();
-	int id = res->getInt(1);
 	
-	
-  delete stmt, res;
+  delete stmt;
   return id;
 }
