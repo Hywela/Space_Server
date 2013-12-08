@@ -3,13 +3,13 @@
 
 
 TcpServer::TcpServer(){
-	 db = new MySqlHandler();
-     db->set_database_info();
-     db->init_connection();
+	db = new MySqlHandler();
+    db->set_database_info("");
+    db->init_connection();
 	receivedByteCount=0;
 	clientCount = 0;
 	shutdownServer =false;
-	loggInCheck = false;
+	
 	if (SDLNet_Init() == -1)
     {
         cout << "Failed to intialise SDL_net: " << SDLNet_GetError() << endl;
@@ -166,9 +166,9 @@ void TcpServer::socket_activity_all(){
                 receivedByteCount = SDLNet_TCP_Recv(clientSocket[clientNumber], buffer, BUFFER_SIZE);
 			
 
-
+				
                 // If there's activity, but we didn't read anything from the client socket, then the client has disconnected...
-				if (receivedByteCount <= 0 || loggInCheck)
+				if (receivedByteCount <= 0)
                 {
                     //...so output a suitable message and then...
                     cout << "Client " << clientNumber << " disconnected." << endl << endl;
@@ -185,7 +185,7 @@ void TcpServer::socket_activity_all(){
                     clientCount--;
  
                     cout << "Server is now connected to: " << clientCount << " client(s)." << endl << endl;
-					loggInCheck =false;
+				
                 }
                 else // If we read some data from the client socket...
                 {
@@ -262,8 +262,10 @@ switch (switch_char)
                             break;
 								  }
                   
+								// c is currently simulating reciving order list and returning  vector 
                         case 'c':{
-						cout << "\n c \n";  
+							
+
 						break;
                                   }
                      
@@ -288,7 +290,7 @@ switch (switch_char)
 							if (id >0){
 								send(clientNumber,"OK");
 
-							}else loggInCheck =true;
+							}else dissconect(clientNumber);
 
 						
                       break;
@@ -298,4 +300,24 @@ switch (switch_char)
                                 break;
                         }
 
+}
+void TcpServer::dissconect(int clientNumber){
+
+                    //...so output a suitable message and then...
+                    cout << "Client " << clientNumber << " disconnected." << endl << endl;
+ 
+                    //... remove the socket from the socket set, then close and reset the socket ready for re-use and finally...
+                    SDLNet_TCP_DelSocket(socketSet, clientSocket[clientNumber]);
+                    SDLNet_TCP_Close(clientSocket[clientNumber]);
+                    clientSocket[clientNumber] = NULL;
+ 
+                    // ...free up their slot so it can be reused...
+                    socketIsFree[clientNumber] = true;
+ 
+                    // ...and decrement the count of connected clients.
+                    clientCount--;
+ 
+                    cout << "Server is now connected to: " << clientCount << " client(s)." << endl << endl;
+					
+                
 }

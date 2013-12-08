@@ -18,7 +18,7 @@ const unsigned short MAX_CLIENTS = MAX_SOCKETS - 1; // Max number of clients in 
 class TcpServer
 {
 
-	bool shutdownServer, loggInCheck;
+	bool shutdownServer;
 	IPaddress serverIP; 
 	TCPsocket serverSocket;              // The server socket that clients will use to connect to us
     TCPsocket clientSocket[MAX_CLIENTS]; // An array of sockets for the clients, we don't include the server socket (it's specified separately in the line above)
@@ -42,5 +42,6 @@ public:
 	void socket_activity_all();
 	void main_loop();
 	void send(int clientNumber, string message);
+	void dissconect(int clientNumber);
 };
 
