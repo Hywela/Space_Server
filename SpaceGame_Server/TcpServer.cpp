@@ -4,7 +4,7 @@
 TcpServer::TcpServer(){
 	string serverName = "25.219.167.39";
 	db = new MySqlHandler();
-    db->set_database_info("mysql.stud.hig.no","imt3601h13gr01",3306,"imjRWuq2");
+    db->set_database_info(;
     db->init_connection();
 	receivedByteCount=0;
 	clientCount = 0;
