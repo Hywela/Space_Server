@@ -74,15 +74,16 @@
     <ClCompile Include="NetworkSender.cpp" />
     <ClCompile Include="Space_Ship.cpp" />
     <ClCompile Include="TcpServer.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function_pointers.h" />
     <ClInclude Include="Hull.h" />
     <ClInclude Include="Modul.h" />
     <ClInclude Include="MySqlHandler.h" />
     <ClInclude Include="NetworkSender.h" />
     <ClInclude Include="Space_Ship.h" />
     <ClInclude Include="TcpServer.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

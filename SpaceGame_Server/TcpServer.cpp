@@ -1,15 +1,14 @@
 #include "TcpServer.h"
 
 
-
 TcpServer::TcpServer(){
+	
 	db = new MySqlHandler();
-    db->set_database_info("");
+    db->set_database_info("mysql.stud.hig.no","imt3601h13gr01",3306,"imjRWuq2");
     db->init_connection();
 	receivedByteCount=0;
 	clientCount = 0;
 	shutdownServer =false;
-	
 	if (SDLNet_Init() == -1)
     {
         cout << "Failed to intialise SDL_net: " << SDLNet_GetError() << endl;
@@ -110,13 +109,15 @@ void TcpServer::socket_server_dataRecived(){
  
                 // ...accept the client connection and then...
                 clientSocket[freeSpot] = SDLNet_TCP_Accept(serverSocket);
- 
+				user[freeSpot] = new User(freeSpot);
                 // ...add the new client socket to the socket set (i.e. the list of sockets we check for activity)
                 SDLNet_TCP_AddSocket(socketSet, clientSocket[freeSpot]);
- 
+				
+				
                 // Increase our client count
                 clientCount++;
- 
+				
+				
                 // Send a message to the client saying "OK" to indicate the incoming connection has been accepted
                 strcpy_s( buffer, SERVER_NOT_FULL.c_str() );
                 int msgLength = strlen(buffer) + 1;
@@ -227,15 +228,15 @@ void TcpServer::main_loop(){
 	
 		socket_activity_all();
 		socket_server_dataRecived();
-
+		matchMaking();
 		
 		
 	}while(shutdownServer ==false);
 }
 void TcpServer::send(int clientNumber , string message){
-
-	     int msgLength = strlen(buffer) + 1;
-	strcpy_s(buffer,msgLength, message.c_str());
+	
+	    strcpy_s( buffer,message.c_str() );
+ int inputLength = strlen(buffer) + 1;
 
  
  
@@ -243,8 +244,8 @@ void TcpServer::send(int clientNumber , string message){
                         // send the message to all connected clients except the client who originated the message in the first place
                         if ( socketIsFree[clientNumber] == false)
                         {
-                            cout << "re message: " << buffer << " (" << msgLength << " bytes) to client number: " << clientNumber << endl;
-                            SDLNet_TCP_Send(clientSocket[clientNumber], (void *)buffer, msgLength);
+                            cout << "re message: " << buffer << " (" << inputLength << " bytes) to client number: " << clientNumber << endl;
+                            SDLNet_TCP_Send(clientSocket[clientNumber], (void *)buffer, inputLength);
                         }
  
 
@@ -267,11 +268,7 @@ switch (switch_char)
 							
 
 						break;
-                                  }
-                     
-                        case 'd':{     
-                              break;             
-								 }               
+                                  }             
                         case 'e':{ cout << "\n e \n";}
                         break;
                         case 'l':{
@@ -291,11 +288,17 @@ switch (switch_char)
 								send(clientNumber,"OK");
 
 							}else dissconect(clientNumber);
-
-						
-                      break;
-                                }
-  
+						break;}
+								 //Sign up for the que leave the que call it again
+						case 'm':{
+							user[clientNumber]->inQueForMatch();
+							send(clientNumber,"q-inQue");
+							break;}
+								 //figth data
+						case 'f':{
+							int returnTO = user[clientNumber]->inFigthWith();
+							send(returnTO,"IN f (switch returned from");
+						break;}
                         default: SDL_Delay(20);
                                 break;
                         }
@@ -310,10 +313,10 @@ void TcpServer::dissconect(int clientNumber){
                     SDLNet_TCP_DelSocket(socketSet, clientSocket[clientNumber]);
                     SDLNet_TCP_Close(clientSocket[clientNumber]);
                     clientSocket[clientNumber] = NULL;
- 
+					delete user[clientNumber];
                     // ...free up their slot so it can be reused...
                     socketIsFree[clientNumber] = true;
- 
+			
                     // ...and decrement the count of connected clients.
                     clientCount--;
  
@@ -321,3 +324,30 @@ void TcpServer::dissconect(int clientNumber){
 					
                 
 }
+
+void TcpServer::matchMaking(){
+	bool done = false;
+	while (done){
+	int match[3];
+	match[0] = NULL;
+	match[1] = NULL;
+	for (int i=0; i>MAX_CLIENTS; i++){
+			if (user[i] != NULL){
+				if(user[i]->inQueForMatch()){
+					if(match[0] ==NULL){
+						match[0] = i;
+					}else if (match[1] == NULL){
+						match[1] = i;
+						user[match[0]]->setUserInMatch(match[1]);
+						user[match[1]]->setUserInMatch(match[0]);
+						match[0] = NULL; match[1] = NULL;
+						
+				} 
+
+			}}
+
+	}
+	}
+}
+
+
