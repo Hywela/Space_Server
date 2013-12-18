@@ -40,7 +40,10 @@ public:
 	void set_database_info(string host, string db, int port, string pwd);
 	void init_connection();
 	void handler_test(void);
+	void saveShip(int userID, string ship);
+	string getShip(int userID);
 	void handler_set_news(string input);
+	void handler_set_ship(int userID, string shipName, string ship);
 
 	
 

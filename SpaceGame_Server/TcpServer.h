@@ -13,8 +13,8 @@
 const string SERVER_NOT_FULL = "OK";
 const string SERVER_FULL     = "FULL";
 
-const unsigned short PORT        = 8200;            // The port our server will listen for incoming connecions on
-const unsigned short BUFFER_SIZE = 512;             // Size of our message buffer
+const unsigned short PORT        = 6881;            // The port our server will listen for incoming connecions on
+const unsigned short BUFFER_SIZE = 1024;             // Size of our message buffer
 const unsigned short MAX_SOCKETS = 5;               // Max number of sockets
 const unsigned short MAX_CLIENTS = MAX_SOCKETS - 1; // Max number of clients in our socket set (-1 because server's listening socket takes the 1st socket in the set)
 

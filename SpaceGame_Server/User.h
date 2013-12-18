@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 class User
 {
 private:
@@ -6,7 +7,8 @@ private:
 	bool inMatch;
 	bool inQue;
 	int inMatchWith;
-
+	std::string userName;
+	int dbId;
 public:
 	User(int clientNumber);
 	~User();
@@ -16,5 +18,7 @@ public:
 	bool userInMatch();
 	void matchDone();
 	int inFigthWith();
+	void setUserName(std::string name, int id);
+	int getDBID();
 };
 

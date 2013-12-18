@@ -2,9 +2,9 @@
 
 
 TcpServer::TcpServer(){
-	string serverName = "25.219.167.39";
+	string serverName = "90.149.32.155";
 	db = new MySqlHandler();
-    db->set_database_info(;
+    db->set_database_info("mysql.stud.hig.no","imt3601h13gr01",3306,"imjRWuq2");
     db->init_connection();
 	receivedByteCount=0;
 	clientCount = 0;
@@ -30,13 +30,14 @@ TcpServer::TcpServer(){
     // Initialize all the client sockets (i.e. blank them ready for use!)
     for (int loop = 0; loop < MAX_CLIENTS; loop++)
     {
+		user[loop] = NULL;
         clientSocket[loop] = NULL;
         socketIsFree[loop] = true; // Set all our sockets to be free (i.e. available for use for new client connections)
     }
  
     // Try to resolve the provided server hostname. If successful, this places the connection details in the serverIP object and creates a listening port on the provided port number
     // Note: Passing the second parameter as "NULL" means "make a listening port". SDLNet_ResolveHost returns one of two values: -1 if resolving failed, and 0 if resolving was successful
-     hostResolved = SDLNet_ResolveHost(&serverIP, NULL, PORT);
+	hostResolved = SDLNet_ResolveHost(&serverIP, NULL, PORT);
  
     if (hostResolved == -1)
     {
@@ -106,7 +107,7 @@ void TcpServer::socket_server_dataRecived(){
                         break;                      // Break out of the loop straight away
                     }
                 }
- 
+
                 // ...accept the client connection and then...
                 clientSocket[freeSpot] = SDLNet_TCP_Accept(serverSocket);
 				user[freeSpot] = new User(freeSpot);
@@ -225,10 +226,10 @@ void TcpServer::main_loop(){
 	
 	do{	
 		socket_activity();
-	
+		matchMaking();
 		socket_activity_all();
 		socket_server_dataRecived();
-		matchMaking();
+		
 		
 		
 	}while(shutdownServer ==false);
@@ -254,18 +255,22 @@ void TcpServer::handler(char switch_char, int clientNumber){
 
 switch (switch_char)
                         {
-                        case 'a':{
+                        case 'q':{
                      
-                     cout << "\n a \n";
-                                         }
+							dissconect(clientNumber);
+                                 }
                         break;
                         case 'b':{
+							string in(buffer);
+							int idx = in.find("b");
+							string ship = in.substr(idx+2); 
+							db->saveShip( user[clientNumber]->getDBID() , ship);
                             break;
 								  }
                   
 								// c is currently simulating reciving order list and returning  vector 
                         case 'c':{
-							
+							send(clientNumber, db->getShip(user[clientNumber]->getDBID()) );
 
 						break;
                                   }             
@@ -285,13 +290,14 @@ switch (switch_char)
 							int id = db->handler_getID(uname, pwd);
 							
 							if (id >0){
+								user[clientNumber]->setUserName(uname, id);
 								send(clientNumber,"OK");
 
 							}else dissconect(clientNumber);
 						break;}
 								 //Sign up for the que leave the que call it again
 						case 'm':{
-							user[clientNumber]->inQueForMatch();
+							user[clientNumber]->setInQueForMatch();
 							send(clientNumber,"q-inQue");
 							break;}
 								 //figth data
@@ -299,6 +305,10 @@ switch (switch_char)
 							int returnTO = user[clientNumber]->inFigthWith();
 							send(returnTO,"IN f (switch returned from");
 						break;}
+						case 's':{
+							
+						break;}
+					
                         default: SDL_Delay(20);
                                 break;
                         }
@@ -313,7 +323,7 @@ void TcpServer::dissconect(int clientNumber){
                     SDLNet_TCP_DelSocket(socketSet, clientSocket[clientNumber]);
                     SDLNet_TCP_Close(clientSocket[clientNumber]);
                     clientSocket[clientNumber] = NULL;
-					delete user[clientNumber];
+					delete user[clientNumber];user[clientNumber] = NULL;
                     // ...free up their slot so it can be reused...
                     socketIsFree[clientNumber] = true;
 			
@@ -326,28 +336,39 @@ void TcpServer::dissconect(int clientNumber){
 }
 
 void TcpServer::matchMaking(){
-	bool done = false;
-	while (done){
+
 	int match[3];
 	match[0] = NULL;
 	match[1] = NULL;
-	for (int i=0; i>MAX_CLIENTS; i++){
+	int numberOfPlayers= 0;
+	 
+	for (int i=0; i<MAX_CLIENTS; i++){
 			if (user[i] != NULL){
-				if(user[i]->inQueForMatch()){
-					if(match[0] ==NULL){
+			
+				if(user[i]->inQueForMatch()&& !user[i]->userInMatch()){	
+					if(match[0] == NULL){
+						numberOfPlayers++;
 						match[0] = i;
 					}else if (match[1] == NULL){
+						numberOfPlayers++;
 						match[1] = i;
+					}
+				if (numberOfPlayers == 2){
 						user[match[0]]->setUserInMatch(match[1]);
 						user[match[1]]->setUserInMatch(match[0]);
-						match[0] = NULL; match[1] = NULL;
-						
-				} 
-
-			}}
-
+						send(match[0], "matchFound");
+						send(match[1], "matchFound");
+						numberOfPlayers=0;
+				}
+				}
+			}
 	}
-	}
+				
+	
+	
+	
+	
+
 }
 
 

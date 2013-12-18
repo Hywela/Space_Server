@@ -14,7 +14,70 @@ MySqlHandler::~MySqlHandler(void)
   delete con;
 }
 
+string MySqlHandler:: getShip(int userID){
+	
 
+		string ship="";
+try {
+
+prep_stmt = con->prepareStatement("Select shipData FROM ships WHERE shipOwner=?");
+
+		prep_stmt->setInt(1,userID);
+		prep_stmt->execute();
+		res = prep_stmt->getResultSet();
+
+	if(	res->next()){
+		ship = res->getString(1);
+	}
+
+
+
+	} catch (sql::SQLException &e) {
+  cout << "# ERR: SQLException in " << __FILE__;
+  cout << "(" << __FUNCTION__ << ") on line "<< __LINE__ << endl;
+  cout << "# ERR: " << e.what();
+  cout << " (MySQL error code: " << e.getErrorCode();
+  cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+
+}
+
+  delete stmt;
+
+	return ship;
+}
+void MySqlHandler::saveShip(int userID, string ship){
+try {
+
+	prep_stmt = con->prepareStatement("Select shipOwner FROM ships WHERE shipOwner=?");
+
+		prep_stmt->setInt(1,userID);
+		prep_stmt->execute();
+		res = prep_stmt->getResultSet();
+	if(	res->next() == 0){
+		prep_stmt = con->prepareStatement("INSERT INTO ships(shipOwner, shipData) VALUES(?,?)");
+
+		prep_stmt->setInt(1,userID);
+		prep_stmt->setString(2,ship);
+		prep_stmt->execute();
+	}else {
+	
+		prep_stmt = con->prepareStatement("UPDATE ships SET shipData=? WHERE shipOwner=?");
+		prep_stmt->setInt(2,userID);
+		prep_stmt->setString(1,ship);
+		prep_stmt->execute();
+	}
+
+	} catch (sql::SQLException &e) {
+  cout << "# ERR: SQLException in " << __FILE__;
+  cout << "(" << __FUNCTION__ << ") on line "<< __LINE__ << endl;
+  cout << "# ERR: " << e.what();
+  cout << " (MySQL error code: " << e.getErrorCode();
+  cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+
+}
+  
+  delete prep_stmt;
+}
 void MySqlHandler::set_database_info(string host, string db, int port, string pwd)
 {
 	HOST = host;
@@ -22,7 +85,18 @@ void MySqlHandler::set_database_info(string host, string db, int port, string pw
 	PORT = port;
 	PWD = pwd;
 }
+void MySqlHandler::handler_set_ship(int userID , string shipName, string ship){
+	prep_stmt = con->prepareStatement("INSERT INTO Ship(userID, shipName, ship) VALUES (?,?,?)");
 
+	prep_stmt->setInt(1,userID);
+	prep_stmt->setString(1,shipName);
+	prep_stmt->setString(1,ship);
+		prep_stmt->execute();
+
+
+  
+  delete prep_stmt;
+}
 
 void MySqlHandler::init_connection()
 {
@@ -99,17 +173,26 @@ prep_stmt = con->prepareStatement("UPDATE Online_User SET time_start=NOW() WHERE
 	
 		prep_stmt->setInt(1,input);
 		prep_stmt->execute();
-
+	
   delete prep_stmt;
 
 }
 
 int MySqlHandler:: handler_getID(string input, string pwd){
 
-	cout << "  " << input;
+	
 	  int id=0;
-	  stmt = con->createStatement();
-try {res =  stmt->executeQuery("Select id FROM User WHERE name LIKE '"+input+"' and pwd LIKE '"+pwd+"'");
+
+	
+try {
+
+prep_stmt = con->prepareStatement("Select id FROM User WHERE name=? and pwd=?");
+	
+		prep_stmt->setString(1,input);
+		prep_stmt->setString(2,pwd);
+		prep_stmt->execute();
+		res = prep_stmt->getResultSet();
+
 	if(	res->next()){
 		id = res->getInt(1);
 	}

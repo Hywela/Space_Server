@@ -39,3 +39,12 @@ void User:: matchDone(){
 int User:: inFigthWith(){
 return inMatchWith;
 }
+
+void User:: setUserName(std::string name, int id){
+	userName = name;
+	dbId = id;
+}
+int User:: getDBID(){
+
+	return dbId;
+}
