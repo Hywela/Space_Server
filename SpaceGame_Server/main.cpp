@@ -1,6 +1,6 @@
 // Space Game Server 
 #include "TcpServer.h"
-int main(int argc, char **argv)
+int main(int argc, char* argv[])
 {
 	cout << "Hello and Welcome to Space Game Server\n"<<
 		"please input the PORT(standar(8881) if 0)\n"<<

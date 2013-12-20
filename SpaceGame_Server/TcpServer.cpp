@@ -7,7 +7,7 @@ TcpServer::TcpServer(unsigned short PORT){
 	shutdownServer = false;
 	// Database handling
 	db = new MySqlHandler();	// Host , username, port , and password
-	db->set_database_info();
+	db->set_database_info("");
 	db->init_connection();		// Initialize the database
 	// zeroing out 
 	receivedByteCount=0;		
@@ -326,15 +326,13 @@ void TcpServer::matchMaking(){
 					//cout << " \n  playerone << " << playerOne << " playeTwo << " << playerTwo;
 					user[playerOne]->setUserInMatch(playerTwo); // take it out of the que
 					user[playerTwo]->setUserInMatch(playerOne); // and sets who they are in match with
-					send(user[playerOne]->getClientNumber() ,"matchFound"); // tells the players a match is found
-					send(user[playerTwo]->getClientNumber() ,"matchFound");
 					int random = GetRandomNumber(0,1);
-					if(random == 0){//Player one	// who starts first
-						send(user[playerOne]->getClientNumber() ,"YouAreStarting");
-						send(user[playerTwo]->getClientNumber() ,"EnemyStarting");
-					}else if( random ==1) {						//player two
-						send(user[playerOne]->getClientNumber() ,"EnemyStarting");
-						send(user[playerTwo]->getClientNumber() ,"YouAreStarting");
+					if(random == 0){//Player one	// who starts first and returns matchfound
+						send(user[playerOne]->getClientNumber() ,"matchFound/YouAreStarting");
+						send(user[playerTwo]->getClientNumber() ,"matchFound/EnemyStarting");
+					}else if( random == 1) {						//player two
+						send(user[playerOne]->getClientNumber() ,"matchFound/EnemyStarting");
+						send(user[playerTwo]->getClientNumber() ,"matchFound/YouAreStarting");
 					}	// sets variables to zero so we can match the next two
 					numberOfPlayers=0; playerTwo = NULL ;playerOne = NULL;
 				}// two players matched

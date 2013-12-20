@@ -65,6 +65,7 @@ void MySqlHandler::set_database_info(string host, string db, int port, string pw
 	DB = db;
 	PORT = port;
 	PWD = pwd;
+	
 }
 void MySqlHandler::init_connection(){
 	// Initiating the connector
