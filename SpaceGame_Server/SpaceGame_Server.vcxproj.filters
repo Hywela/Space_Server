@@ -21,19 +21,7 @@
     <ClCompile Include="MySqlHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkSender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TcpServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Space_Ship.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hull.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Modul.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="User.cpp">
@@ -44,19 +32,7 @@
     <ClInclude Include="MySqlHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkSender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TcpServer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Space_Ship.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hull.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Modul.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
